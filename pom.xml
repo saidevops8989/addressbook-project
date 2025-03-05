@@ -252,9 +252,7 @@
                     <!--</plugin>-->
 
                     <!-- PMD -->
-                           <build>
-                        <plugins>
-                            <plugin>
+                        <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-pmd-plugin</artifactId>
                                 <version>3.21.2</version>
@@ -272,8 +270,6 @@
                                     </rulesets>
                                 </configuration>
                             </plugin>
-                        </plugins>
-                    </build>
                             <!-- CPD options -->
                             <minimumTokens>20</minimumTokens>
                             <!--<ignoreIdentifiers>true</ignoreIdentifiers>-->
