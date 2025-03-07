@@ -128,8 +128,10 @@
 			<scope>test</scope>
 		</dependency>
 
-	                <!-- JMETER -->
-	<plugin>
+	        <!-- JMETER -->
+<build>
+    <plugins>
+        <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>jmeter-maven-plugin</artifactId>
             <version>2.9</version> <!-- or the latest version -->
@@ -149,6 +151,9 @@
                 </execution>
             </executions>
         </plugin>
+    </plugins>
+</build>
+
 
 
 		<!-- COMMONS -->
