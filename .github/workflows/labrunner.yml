@@ -1,5 +1,4 @@
-
-name: localnodeas runner 
+name: localrunner
 
 on:
   push:
@@ -10,8 +9,7 @@ on:
 jobs:
   build-and-deploy:
 
-    runs-on: self-hosted
-    labels: prod
+    runs-on: [self-hosted, prod]
 
     steps:
     - uses: actions/checkout@v4
