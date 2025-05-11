@@ -79,3 +79,15 @@ To use the built in server adapters of Eclipse, instead of doing "Run As -> Mave
 - *Do not use the suggested J2EE Preview server* as it is outdated, deprecated and does not support Servlet 3, which is required for this applications
 
 *** End of documentation
+
+
+
+podman issuesroot@serverA ~]# cat /etc/subuid 
+jenkins:100000:65536
+[root@serverA ~]# cat /etc/subgid 
+jenkins:100000:65536
+
+[root@serverA ~]# #loginctl enable-linger jenkins
+
+
+
