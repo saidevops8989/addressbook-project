@@ -1,5 +1,5 @@
 # Use a specific Tomcat versionfdfd
-FROM tomcat:9-jdk8
+FROM docker.io/tomcat:9-jdk8
 
 # Copy the WAR file into the Tomcat webapps directory
 COPY target/*.war /usr/local/tomcat/webapps/
