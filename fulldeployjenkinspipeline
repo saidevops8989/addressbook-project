@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+    tools {
+        maven 'mymaven'
+    }
+    environment {
+        PODMAN_IMAGE = 'my-tomcat-app'
+        PODMAN_TAG = 'latest'
+        PODMAN_REGISTRY = 'docker.io' // Use 'docker.io' for Docker Hub
+        PODMAN_USERNAME = credentials('podman-username')
+        PODMAN_PASSWORD = credentials('podman-username')
+        KUBECONFIG = credentials('kubeconfig')
+    }
+    stages {
+        stage("Checkout from GitHub") {
+            steps {
+                git branch: 'master',
+                url: 'https://github.com/saidevops8989/addressbook-project.git'
+                echo 'Pulled from GitHub successfully'
+            }
+        }
+        stage("Compile the code to executable format") {
+            steps {
+                sh "mvn compile"
+                echo 'Converted the code from human-readable to machine-readable'
+            }
+        }
+        stage("Testing the code") {
+            steps {
+                sh "mvn test"
+                echo 'Run and execute the test cases'
+            }
+        }
+        stage("Code review to check quality of code") {
+            steps {
+                sh "mvn pmd:pmd"
+                echo 'Code review done'
+            }
+        }
+        stage("Convert the code to package") {
+            steps {
+                sh "mvn package"
+                echo 'Convert the files to WAR file'
+            }
+        }
+        stage("Podman Build") {
+            steps {
+                 sh "podman build   -t docker.io/devopsstuff09/my-tomcat-app:${PODMAN_TAG} ."
+                 echo 'Podman image built successfully'
+            }
+        }
+        stage("Podman Push") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'podman-credentials', passwordVariable: 'PODMAN_PASSWORD', usernameVariable: 'PODMAN_USERNAME')]) {
+                    sh "podman login -u ${PODMAN_USERNAME} -p ${PODMAN_PASSWORD} ${PODMAN_REGISTRY}"
+                    sh "podman tag ${PODMAN_IMAGE}:${PODMAN_TAG} ${PODMAN_REGISTRY}/${PODMAN_USERNAME}/${PODMAN_IMAGE}:${PODMAN_TAG}"
+                    sh "podman push ${PODMAN_REGISTRY}/${PODMAN_USERNAME}/${PODMAN_IMAGE}:${PODMAN_TAG}"
+                }
+                echo 'Podman image pushed to registry successfully'
+            }
+        }
+        stage("Deploy to Kubernetes") {
+            steps {
+                withKubeConfig([credentialsId: 'kubeconfig']) {
+                      sh "kubectl get pods"
+                      sh "kubectl apply -f deployment.yaml -n project"
+                      sh "kubectl apply -f service.yaml  -n project"
+                    //sh "kubectl rollout update deployment/${PODMAN_IMAGE} -f deployment.yaml"
+                }
+                echo 'Deployed to Kubernetes successfully'
+            }
+        }
+    }
+}
